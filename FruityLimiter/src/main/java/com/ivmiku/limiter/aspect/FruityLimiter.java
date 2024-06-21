@@ -40,7 +40,7 @@ public class FruityLimiter {
             String key = "limiter:" + limiter.key();
             if (limiterProperties.getMethod()==1) {
                 if (redisUtil.ifExist(key)) {
-                    Integer num = (Integer) redisUtil.getValue(key);
+                    Integer num = Integer.parseInt(redisUtil.getValue(key)) ;
                     if (num >0) {
                         Long expire = redisUtil.setValue(key, num-1);
                         redisUtil.setExpire(key, Math.toIntExact(expire), TimeUnit.SECONDS);
@@ -53,7 +53,7 @@ public class FruityLimiter {
                 }
             } else if (limiterProperties.getMethod()==2) {
                 if (redisUtil.ifExist(key)) {
-                    Integer num = (Integer) redisUtil.getValue(key);
+                    Integer num = Integer.parseInt(redisUtil.getValue(key));
                     if (!redisUtil.ifExist(key+"s")) {
                         redisUtil.setValue(key, num-1+limiter.num());
                         redisUtil.setValue(key+"s", 0);
