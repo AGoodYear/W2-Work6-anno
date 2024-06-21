@@ -38,6 +38,17 @@ public class FruityLimiter {
         Limiter limiter = method.getAnnotation(Limiter.class);
         if (limiter!=null) {
             String key = "limiter:" + limiter.key();
+            int time, limitNum;
+            if (limiter.time()!=-1) {
+                time = limiter.time();
+            } else {
+                time = limiterProperties.getDefaultTime();
+            }
+            if (limiter.num()!=-1) {
+                limitNum = limiter.num();
+            } else {
+                limitNum = limiterProperties.getDefaultNum();
+            }
             if (limiterProperties.getMethod()==1) {
                 if (redisUtil.ifExist(key)) {
                     Integer num = Integer.parseInt(redisUtil.getValue(key)) ;
@@ -45,11 +56,11 @@ public class FruityLimiter {
                         Long expire = redisUtil.setValue(key, num-1);
                         redisUtil.setExpire(key, Math.toIntExact(expire), TimeUnit.SECONDS);
                     } else {
-                        throw new OverloadException(limiter.key(), limiterProperties.getErrorCode());
+                        throw new OverloadException(limiter.key(), limiterProperties.getErrorCode(), limiterProperties.getErrorException());
                     }
                 } else {
-                    redisUtil.setValue(key, limiter.num()-1);
-                    redisUtil.setExpire(key, limiter.time(), limiter.timeUnit());
+                    redisUtil.setValue(key, limitNum-1);
+                    redisUtil.setExpire(key, time, limiter.timeUnit());
                 }
             } else if (limiterProperties.getMethod()==2) {
                 if (redisUtil.ifExist(key)) {
@@ -87,7 +98,12 @@ class Call{
         String msg = e.getName();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-        Result result = new Result(code, "接口" + msg + "已被限流");
+        Result result;
+        if (e.getMsg().equals("")) {
+            result = new Result(code, "接口" + msg + "已被限流");
+        } else {
+            result = new Result(code, e.getMsg());
+        }
         return objectMapper.writeValueAsString(result);
     }
 }

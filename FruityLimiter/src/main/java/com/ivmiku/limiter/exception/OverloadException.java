@@ -16,5 +16,11 @@ public class OverloadException extends RuntimeException{
         this.code=code;
     }
 
+    public OverloadException(String name, int code, String msg) {
+        this.name = name;
+        this.code=code;
+        this.msg=msg;
+    }
+
 
 }

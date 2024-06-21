@@ -11,4 +11,8 @@ public class LimiterProperties {
     private int errorCode = -1;
 
     private String errorException = "";
+
+    private int defaultTime =1000;
+
+    private int defaultNum =10;
 }

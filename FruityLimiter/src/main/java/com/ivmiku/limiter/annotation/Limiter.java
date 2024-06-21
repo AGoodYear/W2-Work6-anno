@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Documented
 public @interface Limiter {
     String key() default "";
-    int time();
+    int time() default -1;
     TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
-    int num();
+    int num() default -1;
 }

@@ -12,10 +12,21 @@ import java.util.concurrent.TimeUnit;
 public class DemoController {
 
 
-
-    @Limiter(key = "233", time = 5, num = 2, timeUnit = TimeUnit.SECONDS)
+    /**
+     * 默认配置限流演示
+     */
+    @Limiter(key = "233")
     @GetMapping("hi")
     public String sayHi() {
         return "hi";
+    }
+
+    /**
+     * 单独配置限流演示
+     */
+    @Limiter(key = "fullConfig", num = 1, time = 5, timeUnit = TimeUnit.SECONDS)
+    @GetMapping("config")
+    public String saySuccess() {
+        return "success";
     }
 }
